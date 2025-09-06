@@ -33,7 +33,12 @@ pub mod anchor_flash_loan {
 
         // Check if this is the first instruction in the transaction.
         let current_index = load_current_index_checked(&ctx.accounts.sysvar_instructions)?;
-        require_eq!(current_index, 0, ProtocolError::InvalidIx); 
+        require_eq!(current_index, 0, ProtocolError::InvalidIx);
+        
+        let current_instruction =  load_instruction_at_checked(0, 
+            &ctx.accounts.sysvar_instructions).unwrap();
+
+        require_keys_eq!(current_instruction.program_id, crate::ID, ProtocolError::InvalidIx);
 
         // Get the count of instructions in the transaction
         let instruction_count = u16::from_le_bytes(
@@ -123,7 +128,7 @@ pub struct Loan<'info>{
         seeds = [b"protocol"],
         bump
     )]
-    /// CHECK: "unsafe" tastes better
+    /// CHECK: This is an account that controls the token account for each mint
     protocol:UncheckedAccount<'info>,
 
     mint:Account<'info, Mint>,

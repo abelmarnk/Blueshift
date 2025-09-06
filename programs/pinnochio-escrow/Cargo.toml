@@ -1,0 +1,23 @@
+[package]
+name = "pinnochio-escrow"
+version = "0.1.0"
+description = "Created with Anchor"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pinnochio_escrow"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+
+[dependencies]
+pinocchio = { workspace = true }
+pinocchio-system = { workspace = true }
+pinocchio-token = { workspace = true }
+pinocchio-associated-token-account = { workspace = true }
+basic-helpers = {path = "../pinocchio-helpers/basic-helpers"}
+token-interface-helpers = {path = "../pinocchio-helpers/token-interface-helpers"}
+associated-token-helpers = {path = "../pinocchio-helpers/associated-token-helpers"}

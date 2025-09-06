@@ -1,0 +1,18 @@
+[package]
+name = "pinnochio-amm"
+version = "0.1.0"
+edition = "2021"
+
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pinnochio_amm"
+
+[dependencies]
+bytemuck = {version = "1.23.2",  features = ["derive", "min_const_generics"]}
+constant-product-curve = { git = "https://github.com/deanmlittle/constant-product-curve", version = "0.1.0" }
+pinocchio = {workspace = true}
+pinocchio-associated-token-account = {workspace = true}
+pinocchio-pubkey = {workspace = true}
+pinocchio-system = {workspace = true}
+pinocchio-token = {workspace = true}

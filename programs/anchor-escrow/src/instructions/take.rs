@@ -31,7 +31,7 @@ pub struct Take<'info> {
         mut,
         seeds = [b"escrow", maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()],
         bump = escrow.bump,
-        has_one = maker @ EscrowError::InvalidMaker, // Necessary?
+        has_one = maker @ EscrowError::InvalidMaker, // This check is not necessary since the escrow is derived from the maker
         has_one = mint_a @ EscrowError::InvalidMintA,
         has_one = mint_b @ EscrowError::InvalidMintB,
         close = maker

@@ -24,7 +24,7 @@ pub struct Refund<'info> {
         mut,
         seeds = [b"escrow", maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()],
         bump = escrow.bump,
-        has_one = maker @ EscrowError::InvalidMaker, // Necessary?
+        has_one = maker @ EscrowError::InvalidMaker, // This check is not necessary since the escrow is derived from the maker
         has_one = mint_a @ EscrowError::InvalidMintA,
         close = maker
     )]
@@ -57,37 +57,37 @@ impl<'info> Refund<'info>  {
     pub fn withdraw_and_close_vault(&mut self) ->Result<()>{
 
         let transfer_accounts = TransferChecked{
-                authority:self.escrow.to_account_info(),
-                from: self.vault.to_account_info(),
-                mint: self.mint_a.to_account_info(),
-                to: self.maker_ata_a.to_account_info()
-            };
+            authority:self.escrow.to_account_info(),
+            from: self.vault.to_account_info(),
+            mint: self.mint_a.to_account_info(),
+            to: self.maker_ata_a.to_account_info()
+        };
 
-            let seed_bytes = self.escrow.seed.to_le_bytes();
+        let seed_bytes = self.escrow.seed.to_le_bytes();
 
-            let bump_seed = &[self.escrow.bump];
+        let bump_seed = &[self.escrow.bump];
 
-            let signer_seeds = &[&[b"escrow", self.maker.key.as_ref(), &seed_bytes, bump_seed][..]];
+        let signer_seeds = &[&[b"escrow", self.maker.key.as_ref(), &seed_bytes, bump_seed][..]];
 
-            let transfer_context = CpiContext::new_with_signer(
-                self.token_program.to_account_info(),
-                transfer_accounts,
-                signer_seeds
-            );
+        let transfer_context = CpiContext::new_with_signer(
+            self.token_program.to_account_info(),
+            transfer_accounts,
+            signer_seeds
+        );
 
-            transfer_checked(transfer_context, self.vault.amount, self.mint_a.decimals)?;
+        transfer_checked(transfer_context, self.vault.amount, self.mint_a.decimals)?;
 
-            let close_accounts = CloseAccount{
-                account:self.vault.to_account_info(),
-                authority:self.escrow.to_account_info(),
-                destination:self.maker.to_account_info()
-            };
+        let close_accounts = CloseAccount{
+            account:self.vault.to_account_info(),
+            authority:self.escrow.to_account_info(),
+            destination:self.maker.to_account_info()
+        };
 
-            let close_context = CpiContext::new_with_signer(
-                self.token_program.to_account_info(), 
-                close_accounts, 
-                signer_seeds);
+        let close_context = CpiContext::new_with_signer(
+            self.token_program.to_account_info(), 
+            close_accounts, 
+            signer_seeds);
 
-            close_account(close_context)
+        close_account(close_context)
     }
 }

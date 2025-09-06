@@ -12,19 +12,16 @@ pub mod anchor_vault {
         
         require_eq!(ctx.accounts.vault.lamports(), 0, VaultError::VaultAlreadyExists);
 
-        let rent = Rent::get()?;
-
-        let minimum_balance = rent.minimum_balance(0);
-
-        require_gt!(amount, minimum_balance, VaultError::InvalidAmount);
+        require_keys_eq!(*ctx.accounts.vault.owner, system_program::ID, VaultError::VaultAlreadyExists);
 
         let instruction = system_program::Transfer{
             from:ctx.accounts.signer.to_account_info(),
             to:ctx.accounts.vault.to_account_info(),
         };
 
-        let context = CpiContext::
-        new(ctx.accounts.system_program.to_account_info(), instruction);
+        let context = 
+        CpiContext::new_with_signer(
+            ctx.accounts.system_program.to_account_info(), instruction, &[]);
 
         system_program::transfer(context, amount)?;
 
@@ -67,7 +64,7 @@ pub struct VaultAction<'info> {
         seeds = [b"vault", signer.key.as_ref()],
         bump
     )]
-    /// CHECK: ?
+    /// CHECK: This just stores SOL, and is controlled by the program
     vault:UncheckedAccount<'info>,
 
     system_program:Program<'info, System>

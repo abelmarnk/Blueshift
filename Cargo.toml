@@ -1,13 +1,35 @@
 [workspace]
 members = [
-    "programs/*"
+    "programs/anchor-vault",
+    "programs/anchor-escrow",
+    "programs/anchor-flash-loan",
+    "programs/pinnochio-amm",
+    "programs/pinnochio-escrow",
+    "programs/pinnochio-vault",
+    "programs/pinocchio-helpers/associated-token-helpers",
+    "programs/pinocchio-helpers/basic-helpers",
+    "programs/pinocchio-helpers/token-helpers",
+    "programs/pinocchio-helpers/token2022-helpers",
+    "programs/pinocchio-helpers/token-interface-helpers"
 ]
+
+[workspace.dependencies]
+pinocchio = "0.9.0"
+pinocchio-token = "0.4.0"
+pinocchio-token-2022 = "0.1.0"
+pinocchio-system = "0.3.0"
+pinocchio-associated-token-account = "0.2.0"
+pinocchio-pubkey = "0.3.0"
+anchor-lang = "0.31.1"
+anchor-spl = "0.31.1"
+
 resolver = "2"
 
 [profile.release]
 overflow-checks = true
 lto = "fat"
 codegen-units = 1
+
 [profile.release.build-override]
 opt-level = 3
 incremental = false
